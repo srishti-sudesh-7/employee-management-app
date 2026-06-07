@@ -1,18 +1,7 @@
 import { useState } from "react";
 import {
-  Box,
-  Button,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Avatar,
-  Pagination,
+  Box, Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, 
+  TableHead, TableRow, Typography, Avatar, Pagination,
 } from "@mui/material";
 
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -79,7 +68,7 @@ export default function EmployeeTable() {
 
   return (
     <Box sx={{ p: 4, backgroundColor: "#f5f7fb", minHeight: "100vh" }}>
-      {/* Top Bar */}
+      {}
       <Box
         sx={{
           display: "flex",
@@ -102,7 +91,7 @@ export default function EmployeeTable() {
         </Button>
       </Box>
 
-      {/* Table */}
+      {} 
       <TableContainer
         component={Paper}
         sx={{
@@ -178,7 +167,7 @@ export default function EmployeeTable() {
           </TableBody>
         </Table>
 
-        {/* Footer */}
+        {}
         <Box
           sx={{
             display: "flex",
