@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect,useState} from "react";
 import {
   Box, Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, 
   TableHead, TableRow, Typography, Avatar, Pagination,
@@ -17,58 +17,64 @@ interface Employee {
   image: string;
 }
 
-const initialEmployees: Employee[] = [
-  {
-    id: 1,
-    name: "Ram Naresh",
-    salary: "3,20,800",
-    age: 61,
-    image: "https://i.pravatar.cc/150?img=1",
-  },
-  {
-    id: 2,
-    name: "Harry Potter",
-    salary: "1,70,750",
-    age: 63,
-    image: "https://i.pravatar.cc/150?img=2",
-  },
-  {
-    id: 3,
-    name: "Swasthi Sudesh",
-    salary: "86,000",
-    age: 44,
-    image: "https://i.pravatar.cc/150?img=3",
-  },
-  {
-    id: 4,
-    name: "Kelly Kapoor",
-    salary: "4,33,060",
-    age: 22,
-    image: "https://i.pravatar.cc/150?img=4",
-  },
-
-];
-
-
 export default function EmployeeTable() {
-  const [employees, setEmployees] =
-    useState<Employee[]>(initialEmployees);
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
-  const handleAddEmployee = () => {
-    const newEmployee: Employee = {
-      id: employees.length + 1,
-      name: `Employee ${employees.length + 1}`,
-      salary: "₹ 100,000",
-      age: 25,
-      image: `https://media.istockphoto.com/id/2171382633/vector/user-profile-icon-anonymous-person-symbol-blank-avatar-graphic-vector-illustration.jpg`,
-    };
+  const fetchEmployees = async () => {
+      const response = await fetch(
+        "https://dummy.restapiexample.com/api/v1/employees"
+      );
 
-    setEmployees([...employees, newEmployee]);
+      const result = await response.json();
+
+      const formattedEmployees: Employee[] = result.data.map(
+        (emp: any) => ({
+          id: emp.id,
+          name: emp.employee_name,
+          salary: `${emp.employee_salary}`,
+          age: emp.employee_age,
+          image: `https://i.pravatar.cc/150?img=${emp.id % 70}`,
+        })
+      );
+      setEmployees(formattedEmployees);
   };
 
+  // useEffect(() => {
+  //   fetchEmployees();
+  // }, []);
+
+  const handleAddEmployee = async () => {
+    try {
+      await fetch(
+        "https://dummy.restapiexample.com/api/v1/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: `Employee ${employees.length + 1}`,
+            salary: "100000",
+            age: "25",
+          }),
+        }
+      );
+
+      fetchEmployees();
+    } catch (error) {
+      console.error("Error adding employee:", error);
+    }
+  };
+
+
   return (
-    <Box sx={{ p: 4, backgroundColor: "#f5f7fb", minHeight: "100vh" }}>
-      {}
+    <Box
+      sx={{
+        p: 4,
+        backgroundColor: "#f5f7fb",
+        minHeight: "100vh",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -82,16 +88,14 @@ export default function EmployeeTable() {
           onClick={handleAddEmployee}
           sx={{
             borderRadius: "10px",
-            px: 3,
-            py: 1.2,
             textTransform: "none",
+            px: 3,
           }}
         >
           Add Employee
         </Button>
       </Box>
 
-      {} 
       <TableContainer
         component={Paper}
         sx={{
@@ -107,7 +111,9 @@ export default function EmployeeTable() {
               <TableCell>Salary</TableCell>
               <TableCell>Age</TableCell>
               <TableCell>Profile Image</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell align="center">
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
 
@@ -118,7 +124,9 @@ export default function EmployeeTable() {
 
                 <TableCell>{employee.name}</TableCell>
 
-                <TableCell>{employee.salary}</TableCell>
+                <TableCell>
+                  {employee.salary}
+                </TableCell>
 
                 <TableCell>{employee.age}</TableCell>
 
@@ -131,6 +139,7 @@ export default function EmployeeTable() {
 
                 <TableCell align="center">
                   <IconButton
+                    //onClick={() =>}                    
                     sx={{
                       bgcolor: "#eef3ff",
                       mr: 1,
@@ -142,6 +151,7 @@ export default function EmployeeTable() {
                   </IconButton>
 
                   <IconButton
+                    //onClick={() =>}
                     sx={{
                       bgcolor: "#eefcf3",
                       mr: 1,
@@ -153,6 +163,7 @@ export default function EmployeeTable() {
                   </IconButton>
 
                   <IconButton
+                    //onClick={() =>}
                     sx={{
                       bgcolor: "#fff0f0",
                     }}
@@ -167,7 +178,6 @@ export default function EmployeeTable() {
           </TableBody>
         </Table>
 
-        {}
         <Box
           sx={{
             display: "flex",
@@ -177,7 +187,7 @@ export default function EmployeeTable() {
           }}
         >
           <Typography variant="body2">
-            Showing 1 to {employees.length} entries
+            Showing {employees.length} entries
           </Typography>
 
           <Pagination
